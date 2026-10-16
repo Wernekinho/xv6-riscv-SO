@@ -6,6 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "utsname.h"
 
 uint64
 sys_exit(void)
@@ -109,4 +110,32 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+uint64 sys_uname(void) {
+  uint64 endereco; // endereço de memoria de 64 bits, esse é o endereço de memoria do espaço de usuário
+  struct utsname uname; // cria um struct temporario na pilha do kernel do processo atual
+  struct proc *p = myproc(); // ponteiro para a estrutura de controle do processo, precisamos disso para acessar a tabela de páginas do processo e o tamanho da memoria dele
+
+  argaddr(0, &endereco); // No risc-v o primeiro argumento é guardado no registrador a0 da CPU esse argaddr ele puxa o ponteiro de memoria desse registrador
+
+  // limpa o lixo de memoria alocado no espaço do struct
+  memset(&uname, 0, sizeof(uname));
+
+  // define os valores do sistema de forma segura (garante que o ultimo caracter seja \0 para evitar buffer overflow)
+  safestrcpy(uname.sysname, "xv6-riscv", UTSLEN);
+  safestrcpy(uname.nodename, "xv6-node", UTSLEN);
+  safestrcpy(uname.release, "1.0-mit", UTSLEN);
+  safestrcpy(uname.version, "2026-SO-UFRRJ", UTSLEN);
+  safestrcpy(uname.machine, "riscv64", UTSLEN);
+
+  // faz a copia dos dados da memoria do kernel para a memoria do espaço de usuario
+  // o copyout ele verifica a copia não ultrapassa o limite da memoria do processo (p->sz)
+  // percorre o pagetable para descobrir o espaço real da memoria na RAM e depois copia os dados de uname (kernel) para a memoria
+  // se algo der errado nesse caminho ele retorna -1
+  if(copyout(p->pagetable, p->sz, endereco, (char *)&uname, sizeof(uname)) < 0) {
+    return -1;
+  }
+
+  return 0;
 }
