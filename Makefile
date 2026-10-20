@@ -160,6 +160,7 @@ UPROGS=\
 	$U/_sync\
 	$U/_teste\
 	$U/_uname\
+	$U/_hostname\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

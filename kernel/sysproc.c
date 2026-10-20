@@ -152,3 +152,29 @@ uint64 sys_uname(void) {
 
   return 0;
 }
+
+uint64 sys_sethostname(void) {
+  uint64 endereco;
+  char novo[UTSLEN];
+  struct proc *p = myproc();
+
+  // mesma coisa que o de cima
+  argaddr(0, &endereco);
+
+  // consulta comando de cima, faz a mesma coisa
+  if(copyinstr(p->pagetable, p->sz, novo, endereco, UTSLEN) < 0)
+    return -1;
+  // se o primeiro caracter for o endofline o nome é vazio e isso não pode ocorrer
+  if(novo[0] == '\0')
+    return -1;
+  
+  // obtem o semafaro para alterar o valor de memoria do nodename
+  acquire(&uts_lock);
+  // primeiro define o espaço da memoria do nodename com 0s
+  memset(system_uts.nodename, 0, UTSLEN);
+  // copia a string para o nodename
+  safestrcpy(system_uts.nodename, novo, UTSLEN);
+  release(&uts_lock);
+
+  return 0;
+}
