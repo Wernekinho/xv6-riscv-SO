@@ -80,6 +80,14 @@ CFLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
+UTS_RELEASE := $(shell git describe --always --dirty 2>/dev/null || echo "1.0.0")
+UTS_VERSION := $(shell LANG=C date "+%a %b %d %H:%M:%S %Z %Y")
+
+CFLAGS += '-DUTS_SYSNAME="xv6-riscv"'
+CFLAGS += '-DUTS_NODENAME="xv6-node"'
+CFLAGS += '-DUTS_RELEASE="$(UTS_RELEASE)"'
+CFLAGS += '-DUTS_VERSION="\#1 SMP $(UTS_VERSION)"'
+
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
 CFLAGS += -fno-pie -no-pie

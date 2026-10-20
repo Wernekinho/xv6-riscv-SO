@@ -8,6 +8,21 @@
 #include "vm.h"
 #include "utsname.h"
 
+struct spinlock uts_lock;
+
+// define a struct do uname com os valores de sistema (ignora os erros)
+struct utsname system_uts = {
+  .sysname = UTS_SYSNAME,
+  .nodename = UTS_NODENAME,
+  .release = UTS_RELEASE,
+  .version = UTS_VERSION,
+  #if __riscv_xlen == 64
+    .machine = "riscv64"
+  #else
+    .machine = "riscv32"
+  #endif
+};
+
 uint64
 sys_exit(void)
 {
@@ -123,11 +138,9 @@ uint64 sys_uname(void) {
   memset(&uname, 0, sizeof(uname));
 
   // define os valores do sistema de forma segura (garante que o ultimo caracter seja \0 para evitar buffer overflow)
-  safestrcpy(uname.sysname, "xv6-riscv", UTSLEN);
-  safestrcpy(uname.nodename, "xv6-node", UTSLEN);
-  safestrcpy(uname.release, "1.0-mit", UTSLEN);
-  safestrcpy(uname.version, "2026-SO-UFRRJ", UTSLEN);
-  safestrcpy(uname.machine, "riscv64", UTSLEN);
+  acquire(&uts_lock);
+  memmove(&uname, &system_uts, sizeof(uname));
+  release(&uts_lock);
 
   // faz a copia dos dados da memoria do kernel para a memoria do espaço de usuario
   // o copyout ele verifica a copia não ultrapassa o limite da memoria do processo (p->sz)
