@@ -688,8 +688,10 @@ procdump(void)
   };
   struct proc *p;
   char *state;
+  int ppid
 
   printk("\n");
+  printk("PID\tPPID\tSTATE\tMEM\tNAME\n");
   for (p = proc; p < &proc[NPROC]; p++) {
     if (p->state == UNUSED)
       continue;
@@ -697,7 +699,8 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    printk("%d %s %s", p->pid, state, p->name);
+    ppid = p->parent ? p->parent->pid : 0;
+    printk("%d\t%d\t%s\t%lu\t%s\n", p->pid, ppid, state, p->sz , p->name);
     printk("\n");
   }
 }

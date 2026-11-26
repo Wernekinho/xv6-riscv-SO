@@ -28,6 +28,7 @@ int uptime(void);
 int sync(void);
 int uname(struct utsname*);
 int sethostname(const char*);
+int ps(void);
 
 // ulib.c
 int stat(const char *, struct stat *);
