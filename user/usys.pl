@@ -46,3 +46,4 @@ entry("sync");
 entry("uname");
 entry("sethostname");
 entry("meminfo");
+entry("ps");

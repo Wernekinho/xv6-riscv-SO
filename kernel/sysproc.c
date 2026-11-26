@@ -167,7 +167,7 @@ uint64 sys_sethostname(void) {
   // se o primeiro caracter for o endofline o nome é vazio e isso não pode ocorrer
   if(novo[0] == '\0')
     return -1;
-  
+
   // obtem o semafaro para alterar o valor de memoria do nodename
   acquire(&uts_lock);
   // primeiro define o espaço da memoria do nodename com 0s
@@ -205,4 +205,11 @@ sys_meminfo(void)
     return -1;
 
   return 0;
+}
+
+uint64
+sys_ps(void)
+{
+ procdump(); //printa o tabela de processos para o console
+ return 0;
 }
