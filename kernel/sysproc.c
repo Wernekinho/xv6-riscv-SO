@@ -6,6 +6,22 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "utsname.h"
+
+struct spinlock uts_lock;
+
+// define a struct do uname com os valores de sistema (ignora os erros)
+struct utsname system_uts = {
+  .sysname = UTS_SYSNAME,
+  .nodename = UTS_NODENAME,
+  .release = UTS_RELEASE,
+  .version = UTS_VERSION,
+  #if __riscv_xlen == 64
+    .machine = "riscv64"
+  #else
+    .machine = "riscv32"
+  #endif
+};
 
 uint64
 sys_exit(void)
@@ -109,4 +125,56 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+uint64 sys_uname(void) {
+  uint64 endereco; // endereço de memoria de 64 bits, esse é o endereço de memoria do espaço de usuário
+  struct utsname uname; // cria um struct temporario na pilha do kernel do processo atual
+  struct proc *p = myproc(); // ponteiro para a estrutura de controle do processo, precisamos disso para acessar a tabela de páginas do processo e o tamanho da memoria dele
+
+  argaddr(0, &endereco); // No risc-v o primeiro argumento é guardado no registrador a0 da CPU esse argaddr ele puxa o ponteiro de memoria desse registrador
+
+  // limpa o lixo de memoria alocado no espaço do struct
+  memset(&uname, 0, sizeof(uname));
+
+  // define os valores do sistema de forma segura (garante que o ultimo caracter seja \0 para evitar buffer overflow)
+  acquire(&uts_lock);
+  memmove(&uname, &system_uts, sizeof(uname));
+  release(&uts_lock);
+
+  // faz a copia dos dados da memoria do kernel para a memoria do espaço de usuario
+  // o copyout ele verifica a copia não ultrapassa o limite da memoria do processo (p->sz)
+  // percorre o pagetable para descobrir o espaço real da memoria na RAM e depois copia os dados de uname (kernel) para a memoria
+  // se algo der errado nesse caminho ele retorna -1
+  if(copyout(p->pagetable, p->sz, endereco, (char *)&uname, sizeof(uname)) < 0) {
+    return -1;
+  }
+
+  return 0;
+}
+
+uint64 sys_sethostname(void) {
+  uint64 endereco;
+  char novo[UTSLEN];
+  struct proc *p = myproc();
+
+  // mesma coisa que o de cima
+  argaddr(0, &endereco);
+
+  // consulta comando de cima, faz a mesma coisa
+  if(copyinstr(p->pagetable, p->sz, novo, endereco, UTSLEN) < 0)
+    return -1;
+  // se o primeiro caracter for o endofline o nome é vazio e isso não pode ocorrer
+  if(novo[0] == '\0')
+    return -1;
+  
+  // obtem o semafaro para alterar o valor de memoria do nodename
+  acquire(&uts_lock);
+  // primeiro define o espaço da memoria do nodename com 0s
+  memset(system_uts.nodename, 0, UTSLEN);
+  // copia a string para o nodename
+  safestrcpy(system_uts.nodename, novo, UTSLEN);
+  release(&uts_lock);
+
+  return 0;
 }
