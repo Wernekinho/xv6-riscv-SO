@@ -162,6 +162,10 @@ UPROGS=\
 	$U/_teste\
 	$U/_uname\
 	$U/_hostname\
+	$U/_free\
+	$U/_memtest\
+	$U/_minvalid\
+	$U/_memcorrida\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

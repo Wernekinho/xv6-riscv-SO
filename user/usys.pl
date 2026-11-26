@@ -45,3 +45,4 @@ entry("uptime");
 entry("sync");
 entry("uname");
 entry("sethostname");
+entry("meminfo");
