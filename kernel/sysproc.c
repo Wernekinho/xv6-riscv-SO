@@ -175,6 +175,7 @@ uint64 sys_sethostname(void) {
   // copia a string para o nodename
   safestrcpy(system_uts.nodename, novo, UTSLEN);
   release(&uts_lock);
+  return 0;
 }
 
 uint64
