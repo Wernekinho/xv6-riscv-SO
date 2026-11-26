@@ -165,7 +165,7 @@ UPROGS=\
 	$U/_memtest\
 	$U/_minvalid\
 	$U/_memcorrida\
-	$U/_ps\
+	$U/_ps
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 
