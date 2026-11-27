@@ -161,6 +161,9 @@ uint64 sys_sethostname(void) {
   // mesma coisa que o de cima
   argaddr(0, &endereco);
 
+  if (endereco == 0)
+    return -1;
+
   // consulta comando de cima, faz a mesma coisa
   if(copyinstr(p->pagetable, p->sz, novo, endereco, UTSLEN) < 0)
     return -1;
