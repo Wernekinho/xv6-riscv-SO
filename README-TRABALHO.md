@@ -92,15 +92,16 @@ user/usys.pl.
 
 * **Resultados esperados:**
   * Lista os processos presentes na tabela de processos do kernel (`proc`), exibindo informações de identificação, estado, memória utilizada e nome do processo de forma consistente com a estrutura interna do xv6.
-
+  * Com argumentos em excesso (`ps123`), exibe a mensagem de erro e uso e encerra.
+	
 ### 4.4. `free`
 * **Exemplos de uso:**
   $ free
 
 * **Resultados esperados:**
   * Exibe a quantidade de memória física livre/disponível no kernel com base no contador de páginas livres mantido em `kernel/kalloc.c` e protegido pelo `spinlock` do alocador.
-  * Após alocações de memória no espaço de usuário (ex.: `sbrk`/`malloc`), o valor de memória livre diminui e volta a subir após a liberação das páginas.
-
+  * Após alocações de memória no espaço de usuário (ex.: `sbrk`/`malloc`), o valor de memória livre diminui e volta a subir após a liberação das páginas. 
+	
 ### 4.5. `unametest` e `hostnametest`
 * **Exemplos de uso:**
   $ unametest
