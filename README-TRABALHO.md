@@ -20,6 +20,7 @@ Para compilar o sistema do zero (garantindo a reconstrução limpa da imagem `fs
 ```bash
 make clean
 make qemu
+```
 
 ---
 
