@@ -6,7 +6,7 @@
   * Thiago do Carmo
   * Matheus Matias
 * **Repositório Base:** `https://github.com/mit-pdos/xv6-riscv`
-* **Commit-base original (antes das modificações):** `4ded343d5d9d40d4e9dcf4867ca45b14170bf364`
+* **Commit-base (antes das modificações):** `4ded343d5d9d40d4e9dcf4867ca45b14170bf364`
 
 ---
 

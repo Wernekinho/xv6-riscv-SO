@@ -688,7 +688,7 @@ procdump(void)
   };
   struct proc *p;
   char *state;
-  int ppid
+  int ppid;
 
   printk("\n");
   printk("PID\tPPID\tSTATE\tMEM\tNAME\n");
