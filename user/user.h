@@ -28,6 +28,7 @@ int uptime(void);
 int sync(void);
 int uname(struct utsname*);
 int sethostname(const char*);
+int meminfo(uint64 *total, uint64 *free);
 int ps(void);
 
 // ulib.c

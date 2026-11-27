@@ -105,6 +105,7 @@ extern uint64 sys_close(void);
 extern uint64 sys_sync(void);
 extern uint64 sys_uname(void);
 extern uint64 sys_sethostname(void);
+extern uint64 sys_meminfo(void);
 extern uint64 sys_ps(void);
 
 // An array mapping syscall numbers from syscall.h
@@ -135,6 +136,7 @@ static uint64 (*syscalls[])(void) = {
   [SYS_sync]    = sys_sync,
   [SYS_uname]   = sys_uname,
   [SYS_sethostname] = sys_sethostname,
+  [SYS_meminfo] = sys_meminfo,
   [SYS_ps]      = sys_ps,
   // clang-format on
 };

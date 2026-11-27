@@ -23,4 +23,5 @@
 #define SYS_sync   22
 #define SYS_uname  23
 #define SYS_sethostname 24
-#define SYS_ps     25
+#define SYS_meminfo 25
+#define SYS_ps     26

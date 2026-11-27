@@ -175,11 +175,39 @@ uint64 sys_sethostname(void) {
   // copia a string para o nodename
   safestrcpy(system_uts.nodename, novo, UTSLEN);
   release(&uts_lock);
+  return 0;
+}
+
+uint64
+sys_meminfo(void)
+{
+  uint64 total_addr;
+  uint64 free_addr;
+  uint64 total;
+  uint64 free;
+  struct proc *p = myproc();
+
+  // Obtém os endereços enviados pelo programa de usuário.
+  argaddr(0, &total_addr);
+  argaddr(1, &free_addr);
+
+  // Consulta as informações do alocador.
+  getmeminfo(&total, &free);
+
+  // Copia a memória total para o espaço do usuário.
+  if (copyout(p->pagetable, p->sz,
+              total_addr, (char *)&total, sizeof(total)) < 0)
+    return -1;
+
+  // Copia a memória livre para o espaço do usuário.
+  if (copyout(p->pagetable, p->sz,
+              free_addr, (char *)&free, sizeof(free)) < 0)
+    return -1;
 
   return 0;
 }
 
-unit64
+uint64
 sys_ps(void)
 {
  procdump(); //printa o tabela de processos para o console

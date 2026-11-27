@@ -70,6 +70,7 @@ CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding
 CFLAGS += -fno-common -nostdlib
+CFLAGS += -fno-delete-null-pointer-checks
 CFLAGS += -fno-builtin-strncpy -fno-builtin-strncmp -fno-builtin-strlen -fno-builtin-memset
 CFLAGS += -fno-builtin-memmove -fno-builtin-memcmp -fno-builtin-log -fno-builtin-bzero
 CFLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin-putc
@@ -160,9 +161,17 @@ UPROGS=\
 	$U/_teste\
 	$U/_uname\
 	$U/_hostname\
+<<<<<<< HEAD
 	$U/_ps\
 	$U/_pstest\
 
+=======
+	$U/_free\
+	$U/_memtest\
+	$U/_minvalid\
+	$U/_memcorrida\
+	$U/_ps
+>>>>>>> 1e4ffa08706b245cb9a3e074e355b0e0b918f8ec
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
 
