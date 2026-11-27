@@ -20,3 +20,23 @@ Para compilar o sistema do zero (garantindo a reconstrução limpa da imagem `fs
 ```bash
 make clean
 make qemu
+
+---
+
+## 3. Arquivos Modificados
+
+Makefile
+kernel/defs.h
+kernel/file.c
+kernel/kalloc.c
+kernel/pipe.c
+kernel/proc.c
+kernel/syscall.c
+kernel/syscall.h
+kernel/sysproc.c
+kernel/trampoline.S
+kernel/uart.c
+user/sh.c
+user/user.h
+user/usertests.c
+user/usys.pl
